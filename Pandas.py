@@ -108,3 +108,25 @@ space()
 df.reset_index(inplace = True)
 print(df)
 
+#different ways of creating dataframe
+#reading csv file:
+#df = pd.read_csv("file_name.csv")
+
+#reading excel file:
+#df = pd.read_excel("file_name.xlsx", "sheet1")
+
+#using python dictionary
+#weather = {Dictionary}
+#df = pd.DataFrame(weather)
+
+#using tuple list
+#weather = [(tuple list1), (tuple list2)]
+#while creating this you need to provide column names
+#df = pd.DataFrame(weather, columns = ["day", "temperature", "wind", "event"])
+
+#using list of dictionaries
+#weather = [{Dictionary1}, {Dictionary2}, {Dictionary3}] 
+#each dictionary in list represents a row value along with its column name as key
+#df = pd.DataFrame(weather)
+
+#https://pandas.pydata.org/pandas-docs/stable/user_guide/io.html
