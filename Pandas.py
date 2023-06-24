@@ -107,6 +107,7 @@ space()
 #to reset index to original:
 df.reset_index(inplace = True)
 print(df)
+space()
 
 #different ways of creating dataframe
 #reading csv file:
@@ -130,3 +131,80 @@ print(df)
 #df = pd.DataFrame(weather)
 
 #https://pandas.pydata.org/pandas-docs/stable/user_guide/io.html
+
+#read and write excel csv file
+#if we dont have header, we can do this:
+df = pd.read_excel("E:\\CODING\\GitHub Repos\\PandasCheatSheet\\Data\\Stock.xlsx", header = None, names = ["Column1", "Column2", "Column3", "Column4", "Column5"])
+#the names we passed in list after header = None will be passed as header
+print(df)
+space()
+
+df = pd.read_excel("E:\\CODING\\GitHub Repos\\PandasCheatSheet\\Data\\Stock.xlsx")
+print(df)
+#this prints first row and other headers as na, so to fix that we use:
+space()
+
+df = pd.read_excel("E:\\CODING\\GitHub Repos\\PandasCheatSheet\\Data\\Stock.xlsx", skiprows= 1) #this means it will skip first row
+print(df)
+space()
+
+#if we only want to read certain number of rows
+df = pd.read_excel("E:\\CODING\\GitHub Repos\\PandasCheatSheet\\Data\\Stock.xlsx", nrows=3)
+print(df)
+space()
+
+#cleanup data by replacing empty/non-number values
+df = pd.read_excel("E:\\CODING\\GitHub Repos\\PandasCheatSheet\\Data\\Stock.xlsx", na_values=["not available", "n.a."])
+print(df)
+space()
+
+#company revenue cannot be zero, so we need to change it NaN, and in that case even earning per share(eps) will be converted to NaN
+#so in that case we use suppy dictionary instead of supplying list
+df = pd.read_excel("E:\\CODING\\GitHub Repos\\PandasCheatSheet\\Data\\Stock.xlsx", na_values = {"eps" : ["not available", "n.a."],
+                                                                                                "revenue" : ["not available", "n.a.", -1],
+                                                                                                "people" : ["not available", "n.a."]
+                                                                                                })
+print(df)
+space()
+#its giving en error here, but it runs in replit
+
+#writing back to csv
+df.to_excel('E:\\CODING\\Github Repos\\PandasCheatSheet\\Data\\new.xlsx', index=False)#we use index = False to now write index in file
+
+#if we want to write only 2 columns 
+print(df.columns)
+df.to_excel('E:\\CODING\\Github Repos\\PandasCheatSheet\\Data\\new.xlsx', columns=["tickers", "eps"])
+
+#to skip exporting header
+df.to_excel('E:\\CODING\\Github Repos\\PandasCheatSheet\\Data\\new.xlsx', sheet_name= "Sheet1", header=False, index=False)
+#we can also specify startrow and startcol
+
+#using converter:
+def convert_people(cell):
+    if cell == "n.a.":
+        return "sam"
+    return cell
+
+df = pd.read_excel("E:\\CODING\\GitHub Repos\\PandasCheatSheet\\Data\\Stock.xlsx", "Sheet1", converters={
+    'people': convert_people
+})
+print(df)
+
+#writing to excel file
+df_stocks = pd.DataFrame({
+    'tickers': ['GOOGL', 'WMT', 'MSFT'],
+    'price': [845, 65, 64 ],
+    'pe': [30.37, 14.26, 30.97],
+    'eps': [27.82, 4.61, 2.12]
+})
+
+df_weather =  pd.DataFrame({
+    'day': ['1/1/2017','1/2/2017','1/3/2017'],
+    'temperature': [32,35,28],
+    'event': ['Rain', 'Sunny', 'Snow']
+})
+
+with pd.ExcelWriter("E:\\CODING\\GitHub Repos\\PandasCheatSheet\\Data\\Write_Excel.xlsx") as writer:
+    df_stocks.to_excel(writer,sheet_name='Stocks', index=False) #write stock data sheet
+    df_weather.to_excel(writer,sheet_name='Weather', index=False) #write weather data sheet
+
